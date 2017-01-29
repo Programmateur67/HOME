@@ -21,8 +21,8 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
         <title>Poups</title>
     </head>
+    <?php $connected = false; ?>
     <body class="container-fluid bg">
-        <?php $connected = false; ?>
         <header class="container-fluid mragin-bottom">
             <div class="row">
                 <nav class="navbar navbar-inverse navbar-default navbar-fixed-top">
@@ -84,7 +84,7 @@
                 </nav>      
             </div>    
         </header> 
-        <div id="wrap">
+        <div id="wrap" class="<?php if($connected == false){echo 'hidden';}else{echo '';} ?>">
             <div class="well">
                 <div class="container-fluid" id="main-content">
                     <div class="row">
