@@ -1,7 +1,7 @@
 <?php
     
-    $bdd = new PDO('mysql:host=mysql.hostinger.fr;dbname=u673050555_user','u673050555_root','davserveur');
-    //$bdd = new PDO('mysql:host=localhost;dbname=poups','root','');
+    //$bdd = new PDO('mysql:host=mysql.hostinger.fr;dbname=u673050555_user','u673050555_root','davserveur');
+    $bdd = new PDO('mysql:host=localhost;dbname=poups','root','');
 
     $default_pass = sha1('0000');
     setcookie('pseudo','User', null, null,null,false,true);
@@ -34,35 +34,6 @@
                         <li><a class="btn">Listes</a></li>
                     </ul>
                     <div>
-                     <?php 
-                        if(isset($_POST['identity']) && isset($_POST['password']))
-                        {
-                            $pseudo = htmlspecialchars($_POST['identity']) ;
-                            // Hachage du mot de passe
-                            $pass_hache = sha1($_POST['password']);
-        
-                            // Vérification des identifiants
-                            $req = $bdd->prepare('SELECT pseudo FROM user WHERE pseudo = :pseudo AND pass = :pass');
-                            $req->execute(array(
-                                'pseudo' => $pseudo,
-                                'pass' => $pass_hache));
-
-                            $resultat = $req->fetch();
-
-                            if (!$resultat)
-                            {
-                                $connected = false;
-                                header('location:index.php');
-                            }
-                            else
-                            {
-                                $_SESSION['pseudo'] = $resultat['pseudo'];
-                                $request = $bdd->prepare('UPDATE user SET lastco = NOW() WHERE pseudo = :pseudo');
-                                $request->execute(array('pseudo' => $_SESSION['pseudo']));
-                                $connected = true;
-                            }
-                        }
-                    ?>
                     <?php 
                         if($connected == false)
                         { 
@@ -80,6 +51,35 @@
                     <?php
                         } 
                     ?>
+                    <?php 
+                    if(isset($_POST['identity']) && isset($_POST['password']))
+                    {
+                        $pseudo = htmlspecialchars($_POST['identity']) ;
+                        // Hachage du mot de passe
+                        $pass_hache = sha1($_POST['password']);
+
+                        // Vérification des identifiants
+                        $req = $bdd->prepare('SELECT pseudo FROM user WHERE pseudo = :pseudo AND pass = :pass');
+                        $req->execute(array(
+                            'pseudo' => $pseudo,
+                            'pass' => $pass_hache));
+
+                        $resultat = $req->fetch();
+
+                        if (!$resultat)
+                        {
+                            $connected = false;
+                            header('location:index.php');
+                        }
+                        else
+                        {
+                            $_SESSION['pseudo'] = $resultat['pseudo'];
+                            $request = $bdd->prepare('UPDATE user SET lastco = NOW() WHERE pseudo = :pseudo');
+                            $request->execute(array('pseudo' => $_SESSION['pseudo']));
+                            $connected = true;
+                        }
+                    }
+                    ?>
                     </div>
                 </nav>      
             </div>    
@@ -89,64 +89,75 @@
                 <div class="container-fluid" id="main-content">
                     <div class="row">
                         <div class="col-sm-4">
-                            <article class="well nowrap margin-righ">
-                                    <h3>DM Philo</h3>
-                                    <h5 class="italic">Rappel défini à 6H le 26/01/2017</h5>
-                                    <p>
-                                        Je dois faire mon devoir de philo. Est ce que la conscience à un fardeau ? 30 pages. Finir pour le 05/02/2017. Le faire en une fois c'est comme au bac.
-                                    </p>
-                                    <h6>Edité par Diego le 25/01/2017 à 5h24</h6>
-                                    <a class="btn btn-primary">Fait !</a>
-                                    <a class="btn btn-success">Tranquille</a>
-                            </article>
-                        </div>
-                       <div class="col-sm-4">
-                           <article class="well nowrap margin-righ">
-                                    <h3>Jev Australie</h3>
-                                    <h5 class="italic">Rappel défini à 15H le 01/04/2017</h5>
-                                    <p>
-                                        Diego ne dois pas oublier d'envoyer son dossier, préalablement fini, à la préfécture pour son visa d'étudiant en Australie. C'est asse important.
-                                    </p>
-                                    <h6>Edité par Maman le 05/01/2017 à 08h24</h6>
-                                    <a class="btn btn-primary">Fait !</a>
-                                    <a class="btn btn-warning">Pressé</a>
-                            </article>                        
-                        </div>
-                        <div class="col-sm-4">
-                            <article class="well nowrap margin-righ">
-                                    <h3>Dr Ortega</h3>
-                                    <h5 class="italic">Rappel défini à 10H le 21/02/2017</h5>
-                                    <p>
-                                        Tino doit aller chez Ortega pour le surclassement pour l'équipe de France. Ne pas oubliez de prendre la carte vitale et le dossier de la fédé. Il faut ensuite leur envoyer.
-                                    </p>
-                                    <h6>Edité par Maman le 10/01/2017 à 10h24</h6>
-                                    <a class="btn btn-primary">Fait !</a>
-                                    <a class="btn btn-danger">Important</a>
-                            </article>
-                        </div>
-                        <div class="col-sm-4">
                             <form action="index.php" method="post" class="well">
                                 <input type="text" class="form-control" name="title" placeholder="Titre"/>
                                 <input type="text" class="form-control" name="text" placeholder="Courte description ici..."/>
                                 <input type="date" class="form-control" name="date"/>
                                 <input type="time" class="form-control" name="time"/>
-                                <select class="form-control">
-                                    <option value="0">Public</option>
-                                    <option value="1">Tino</option>
-                                    <option value="2">Diego</option>
-                                    <option value="3">Felix</option>
-                                    <option value="4">Maman</option>
-                                    <option value="5">Papa</option>
+                                <select class="form-control" name="impo">
+                                    <option value="0">Pas d'importance</option>
+                                    <option value="1">Tranquille</option>
+                                    <option value="2">Pressé</option>
+                                    <option value="3">Important</option>
                                 </select>
-                                <select class="form-control">
-                                    <option value"0">Pas d'importance</option>
-                                    <option value"1">Tranquille</option>
-                                    <option value"2">Pressé</option>
-                                    <option value"3">Important</option>
-                                </select>
-                                <input type="submit" class="hidden"/>
+                                <button type="submit" class="btn form-control btn-success">Valider</button>
                             </form>
+                            <?php
+                            if(isset($_POST['title']) && isset($_POST['text']) && isset($_POST['date']) && isset($_POST['time']) && isset($_POST['impo']))
+                            {
+                                                                            
+                                $add = $bdd->prepare('INSERT INTO rappel(datedo,user,title,text,rappelday,id,importance,rappelhour) VALUES ( now(), :user, :tilte, :text, :rappelday, :id, :importance, :rappelhour)');
+                                $add->execute(array(
+                                    'user' => $_SESSION['pseudo'],
+                                    'title' => $_POST['title'],
+                                    'text' => $_POST['text'],
+                                    'rappelday' => $_POST['date'],
+                                    'id' => 1,
+                                    'importance' => $_POST['impo'],
+                                    'rappelhour' => $_POST[''],
+                                ));
+                            }
+                        ?>
                         </div>
+                        <?php 
+                            
+                            $rappel = $bdd->query('SELECT * FROM rappel');
+                            while($rappels = $rappel->fetch()){
+                            ?>
+                            <div class="col-sm-4">
+                            <article class="well nowrap margin-righ">
+                                <h3><?php echo $rappels['title']; ?></h3>
+                                <h5 class="italic">Rappel défini le <?php echo $rappels['rappelday']; ?> à <?php echo $rappels['rappelhour']; ?> </h5>
+                                <p>
+                                    <?php echo $rappels['text']; ?>
+                                </p>
+                                <h6>Edité par <?php echo $rappels['user']; ?> le <?php echo $rappels['datedo']; ?></h6>
+                                <?php
+                                    switch($rappels['importance']){
+                                        case 0:
+                                            echo '<a class="btn btn-primary">A faire</a>';
+                                            break;
+                                        case 1:
+                                            echo '<a class="btn btn-success">Tranquille</a>';
+                                            break;
+                                        case 2:
+                                            echo '<a class="btn btn-warning">C\'est pressé</a>';
+                                            break;
+                                        case 3:
+                                            echo '<a class="btn btn-danger">Très Urgent</a>';
+                                            break;
+                                        default:
+                                            echo '<a class="btn btn-primary">A faire</a>';
+                                            break;
+                                    }
+                                ?>
+                                <a class="btn btn-primary" href="">Fait !</a>
+                            </article>
+                        </div>                            
+                        <?php
+                            }
+                        
+                        ?>
                     </div>
                 </div>
             </div>
