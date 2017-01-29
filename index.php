@@ -1,6 +1,7 @@
 <?php
     
-    $bdd = new PDO('mysql:host=localhost;dbname=poups','root','');
+    $bdd = new PDO('mysql:host=mysql.hostinger.fr;dbname=u673050555_user','u673050555_root','davserveur');
+    //$bdd = new PDO('mysql:host=localhost;dbname=poups','root','');
 
     $default_pass = sha1('0000');
     setcookie('pseudo','User', null, null,null,false,true);
